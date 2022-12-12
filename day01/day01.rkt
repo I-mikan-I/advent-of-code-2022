@@ -10,8 +10,6 @@
 
 (define (max-three s)
   (define rations (string-split s "\n\n"))
-  (foldl
-   (lambda (next three)
-     (if (> next (first three)) (sort (cons next (rest three)) <) three))
-   '(0 0 0)
-   (map sum rations)))
+  (foldl (lambda (next three) (if (> next (first three)) (sort (cons next (rest three)) <) three))
+         '(0 0 0)
+         (map sum rations)))
