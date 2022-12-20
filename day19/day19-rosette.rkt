@@ -1,6 +1,4 @@
 #lang rosette/safe
-(require rosette/lib/destruct)
-(require rosette/solver/smt/z3)
 
 (define-struct blueprint (ore clay obsidian geode)
   #:transparent)
@@ -112,7 +110,6 @@
                                (rec2 (+ start 1)))))
                        results))])))
 (clear-vc!)
-
 (foldl *
        1
        (let rec ([i 0] [results '()])
