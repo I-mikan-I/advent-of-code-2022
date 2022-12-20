@@ -101,13 +101,20 @@
             (clear-vc!)
             (rec (+ i 1)
                  (cons (let ([model (minimal-bp (list-ref blueprints i) 23)])
-                         (let rec2 ([start 0])
-                           (define res (solve (assert (> model start))))
-                           (if (unsat? res)
-                               (begin
-                                 (printf "got result ~a for i = ~a\n" start i)
-                                 (* start (+ 1 i)))
-                               (rec2 (+ start 1)))))
+                         (define right
+                           (let find-right ([i 1])
+                             (if (sat? (solve (assert (> model i)))) (find-right (* i 2)) i)))
+                         (let rec2 ([left (quotient right 2)]
+                                    [high right]
+                                    [middle (- right 1 (quotient right 4))])
+                           (define res (solve (assert (> model middle))))
+                           (cond
+                             [(and (unsat? res) (<= (- middle left) 1))
+                              (begin
+                                (printf "got result ~a for i = ~a\n" middle i)
+                                (* middle (+ 1 i)))]
+                             [(unsat? res) (rec2 left middle (+ left (quotient (- middle left) 2)))]
+                             [else (rec2 middle high (+ middle (ceiling (/ (- high middle) 2))))])))
                        results))])))
 (clear-vc!)
 (foldl *
@@ -119,11 +126,18 @@
             (clear-vc!)
             (rec (+ i 1)
                  (cons (let ([model (minimal-bp (list-ref blueprints i) 31)])
-                         (let rec2 ([start 0])
-                           (define res (solve (assert (> model start))))
-                           (if (unsat? res)
-                               (begin
-                                 (printf "got result ~a for i = ~a\n" start i)
-                                 start)
-                               (rec2 (+ start 1)))))
+                         (define right
+                           (let find-right ([i 1])
+                             (if (sat? (solve (assert (> model i)))) (find-right (* i 2)) i)))
+                         (let rec2 ([left (quotient right 2)]
+                                    [high right]
+                                    [middle (- right 1 (quotient right 4))])
+                           (define res (solve (assert (> model middle))))
+                           (cond
+                             [(and (unsat? res) (<= (- middle left) 1))
+                              (begin
+                                (printf "got result ~a for i = ~a\n" middle i)
+                                middle)]
+                             [(unsat? res) (rec2 left middle (+ left (quotient (- middle left) 2)))]
+                             [else (rec2 middle high (+ middle (ceiling (/ (- high middle) 2))))])))
                        results))])))
