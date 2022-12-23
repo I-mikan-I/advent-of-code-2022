@@ -5,6 +5,7 @@
          map-deconstruct
          for/fold/list
          list-idx-set
+         vector-idx
          list-idx)
 
 (define (file->string path)
@@ -34,3 +35,8 @@
     [(list-idx-set lst pos value) (list-set lst pos value)]
     [(list-idx-set lst first pos ... value)
      (list-set lst first (list-idx-set (list-ref lst first) pos ... value))]))
+
+(define-syntax vector-idx
+  (syntax-rules ()
+    [(vector-idx vec index) (vector-ref vec index)]
+    [(vector-idx vec index ... last) (vector-ref (vector-idx vec index ...) last)]))
