@@ -1,4 +1,4 @@
-# Advent of Code 2021
+# Advent of Code 2022
 
 Language used: [Racket](https://racket-lang.org/)
 
